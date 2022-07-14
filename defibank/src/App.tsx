@@ -1,29 +1,20 @@
-import {
-  Container,
-  Switch,
-  useTheme,
-  Text,
-  Card,
-  Grid,
-} from "@nextui-org/react";
-import { useTheme as useNextTheme } from "next-themes";
-import { Route, Routes } from "react-router-dom";
-import Header from "./Components/Header";
-import Home from "./PageViews/Home";
+import { Container, Grid } from '@nextui-org/react'
+import { Route, Routes } from 'react-router-dom'
+import Header from './Components/Header'
+import CreateAccount from './PageViews/CreateAccount'
+import Home from './PageViews/Home'
+import Tranfer from './PageViews/Transfer'
 
 function App() {
   return (
-    <Container xl css={{ background: "$background" }}>
+    <Container lg css={{ background: '$background' }}>
       <Header></Header>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="about" element={<About />} />
+        <Route path="create" element={<CreateAccount />} />
+        <Route path="transfer" element={<Tranfer />} />
       </Routes>
     </Container>
-  );
+  )
 }
-export default App;
-
-function About() {
-  return <h2>About</h2>;
-}
+export default App

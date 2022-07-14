@@ -7,13 +7,15 @@ import Tranfer from './PageViews/Transfer'
 
 function App() {
   return (
-    <Container lg css={{ background: '$background' }}>
+    <Container md css={{ background: '$background' }}>
       <Header></Header>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="create" element={<CreateAccount />} />
-        <Route path="transfer" element={<Tranfer />} />
-      </Routes>
+      <Container sm>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="create" element={<CreateAccount />} />
+          <Route path="transfer" element={<Tranfer />} />
+        </Routes>
+      </Container>
     </Container>
   )
 }

@@ -1,12 +1,8 @@
 import {
   Button,
-  Card,
-  Container,
-  Grid,
-  Row,
-  Switch,
+  Card, Grid, Switch,
   Text,
-  useTheme,
+  useTheme
 } from '@nextui-org/react'
 import { useTheme as useNextTheme } from 'next-themes'
 import { Link } from 'react-router-dom'
@@ -17,14 +13,24 @@ export default function Header() {
   const { isDark } = useTheme()
 
   return (
-    <Container xl>
+    <Card.Footer
+      isBlurred
+      css={{
+        position: 'sticky',
+        bgBlur: isDark ? '#0f111466' : '#ffffff66',
+        borderTop: '$borderWeights$light solid rgba(255, 255, 255, 0.2)',
+        top: 0,
+        zIndex: 1,
+      }}
+    >
       <Grid.Container gap={2} justify="center" alignItems="center">
-        <Grid xs={8} alignItems="center">
+        <Grid xs={8} alignItems="baseline">
           <Text
             h2
             css={{
               textGradient:
                 '90deg, $purple600 30%, $gray600 35%, $blue600 50%, $blue600 70%, $yellow600 95%',
+              marginRight: '50px',
             }}
             weight="bold"
           >
@@ -50,6 +56,6 @@ export default function Header() {
           </Button>
         </Grid>
       </Grid.Container>
-    </Container>
+    </Card.Footer>
   )
 }

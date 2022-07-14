@@ -6,25 +6,23 @@ import {
   Grid,
   Input,
   Button,
-} from "@nextui-org/react";
-import { SunIcon } from "../Icons";
+} from '@nextui-org/react'
+import { SunIcon } from '../Icons'
 
 export default function Tranfer() {
   return (
     <Container lg>
       <Grid.Container gap={2} justify="center">
         <Grid xs={12}>
-          <Text h4 css={{ lineHeight: "$xs" }}>
+          <Text h4 css={{ lineHeight: '$xs' }}>
             Tranfer
           </Text>
         </Grid>
         <Grid xs={12}>
-          <Card isHoverable css={{ $$cardColor: "$colors$secondary" }}>
+          <Card isHoverable css={{ $$cardColor: '$colors$secondary' }}>
             <Card.Body>
               <Grid xs={12} justify="flex-end">
-                <Button disabled>
-                  Account Name:
-                </Button>
+                <Button disabled>Account Name:</Button>
                 <Input
                   clearable
                   fullWidth={true}
@@ -33,9 +31,7 @@ export default function Tranfer() {
                 />
               </Grid>
               <Grid xs={12} justify="flex-end">
-              <Button disabled>
-                  Amount:
-                </Button>
+                <Button disabled>Amount:</Button>
                 <Input
                   clearable
                   fullWidth={true}
@@ -54,5 +50,5 @@ export default function Tranfer() {
         </Grid>
       </Grid.Container>
     </Container>
-  );
+  )
 }

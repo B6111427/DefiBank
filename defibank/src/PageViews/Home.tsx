@@ -24,17 +24,18 @@ export default function Home() {
                 <Grid xs={12}>
                   <Input
                     fullWidth
-                    initialValue=""
+                    bordered
+                    initialValue="Somchay SCB10X"
                     labelLeft="Account Name"
-                    placeholder="getnextui"
                     readOnly
                   />
                 </Grid>
                 <Grid xs={12}>
                   <Input
                     fullWidth
+                    bordered
+                    initialValue="0.00"
                     labelLeft="Balance"
-                    placeholder="getnextui"
                     readOnly
                     labelRight="DAI"
                   />

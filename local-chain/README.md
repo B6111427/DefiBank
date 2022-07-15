@@ -1,13 +1,31 @@
-# Sample Hardhat Project
+# DefiBank SmartContract
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This project is for develop a DefiBank contract, run EVM local-chain and write unit test for DefiBank contract.
+* **Contract:** ./contracts/DefiBank.sol
+* **UnitTest:** ./test/DefiBankTest.sol
 
-Try running some of the following tasks:
 
+
+Instruction for this project:
+
+* **For compile smart contract:** 
 ```shell
-npx hardhat help
-npx hardhat test
-GAS_REPORT=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
+$ npx hardhat compile
+```
+
+* **For run unit test smart contract:** 
+```shell
+$ npx hardhat test
+```
+
+* **Run hardhat node:** 
+```shell
+$ npx hardhat node
+//or
+$ yarn dev
+```
+
+* **Deploy contract to local network:** 
+```shell
+$ npx hardhat run scripts/deploy.ts --network localhost
 ```

@@ -75,7 +75,7 @@ describe("BankOwner", function () {
 
   describe("Deposit", function () {
     describe("Validations", function () {
-      it("Should increase balance by amount", async function () {
+      it("Should increase balance of ownerWallet/accountNumber by amount", async function () {
         // Given
         const { defiBank, Account1 } = await loadFixture(defiBankFixture);
         const accountName = "TestAccount";
@@ -85,6 +85,7 @@ describe("BankOwner", function () {
         await defiBank.connect(Account1).deposit(accountName, amount);
         // Then
         expect(await defiBank.accountBalance(accountName)).to.equal(amount);
+        expect(await defiBank.balanceOf(Account1.address)).to.equal(amount);
       });
 
       it("Should revert when account is not created", async function () {
@@ -118,7 +119,7 @@ describe("BankOwner", function () {
 
   describe("Withdraw", function () {
     describe("Validations", function () {
-      it("Should decrease balance by amount", async function () {
+      it("Should decrease balance of ownerWallet/accountNumber by amount", async function () {
         // Given
         const { defiBank, Account1 } = await loadFixture(defiBankFixture);
         const accountName = "TestAccount";
@@ -130,6 +131,9 @@ describe("BankOwner", function () {
         await defiBank.connect(Account1).withdraw(accountName, withdrawAmount);
         // Then
         expect(await defiBank.accountBalance(accountName)).to.equal(
+          amount - withdrawAmount
+        );
+        expect(await defiBank.balanceOf(Account1.address)).to.equal(
           amount - withdrawAmount
         );
       });
@@ -195,6 +199,194 @@ describe("BankOwner", function () {
         )
           .to.emit(defiBank, "Withdraw")
           .withArgs(accountName, withdrawAmount);
+      });
+    });
+  });
+
+  describe("Transfer", function () {
+    describe("Validations", function () {
+      it(`Should decrease sender ownerWallet/accountNumber balance 
+          and increase reciver ownerWallet/accountNumber balance
+          if it's sameOwner by amount`, async function () {
+        // Given
+        const { defiBank, Account1 } = await loadFixture(defiBankFixture);
+        const sender = "Sender";
+        const reciver = "Revicer";
+        const amount = 500;
+        const transferAmount = 250;
+        await defiBank.connect(Account1).createAccount(sender);
+        await defiBank.connect(Account1).createAccount(reciver);
+        await defiBank.connect(Account1).deposit(sender, amount);
+        // When
+        await defiBank
+          .connect(Account1)
+          .transfer(sender, reciver, transferAmount);
+        // Then
+        expect(await defiBank.accountBalance(sender)).to.equal(
+          amount - transferAmount
+        );
+        expect(await defiBank.accountBalance(reciver)).to.equal(transferAmount);
+        expect(await defiBank.balanceOf(Account1.address)).to.equal(amount);
+      });
+
+      it(`Should decrease sender ownerWallet/accountNumber balance 
+          and increase reciver ownerWallet/accountNumber balance
+          if it's not sameOwner by amount - 1% of fee`, async function () {
+        // Given
+        const { defiBank, Account1, Account2 } = await loadFixture(
+          defiBankFixture
+        );
+        const sender = "Sender";
+        const reciver = "Revicer";
+        const amount = 500;
+        const transferAmount = 270;
+        const fee = Math.floor(transferAmount / 100);
+        await defiBank.connect(Account1).createAccount(sender);
+        await defiBank.connect(Account2).createAccount(reciver);
+        await defiBank.connect(Account1).deposit(sender, amount);
+        // When
+        await defiBank
+          .connect(Account1)
+          .transfer(sender, reciver, transferAmount);
+        // Then
+        expect(await defiBank.accountBalance(sender)).to.equal(
+          amount - transferAmount
+        );
+        expect(await defiBank.accountBalance(reciver)).to.equal(
+          transferAmount - fee
+        );
+        expect(await defiBank.balanceOf(Account1.address)).to.equal(
+          amount - transferAmount
+        );
+        expect(await defiBank.balanceOf(Account2.address)).to.equal(
+          transferAmount - fee
+        );
+      });
+
+      it("Should revert when sender is not created", async function () {
+        // Given
+        const { defiBank } = await loadFixture(defiBankFixture);
+        const sender = "Sender";
+        const reciver = "Revicer";
+        const transferAmount = 270;
+
+        // Then
+        await expect(
+          defiBank.transfer(sender, reciver, transferAmount)
+        ).to.be.revertedWith("This sender account not found");
+      });
+
+      it("Should revert when caller is not owner", async function () {
+        // Given
+        const { defiBank, Account1, Account2 } = await loadFixture(
+          defiBankFixture
+        );
+        const sender = "Sender";
+        const reciver = "Revicer";
+        const amount = 500;
+        const transferAmount = 250;
+        await defiBank.connect(Account1).createAccount(sender);
+        await defiBank.connect(Account1).deposit(sender, amount);
+
+        // Then
+        await expect(
+          defiBank.connect(Account2).transfer(sender, reciver, transferAmount)
+        ).to.be.revertedWith("You are not account owner");
+      });
+
+      it("Should revert when transferAmount > balance", async function () {
+        // Given
+        const { defiBank, Account1, Account2 } = await loadFixture(
+          defiBankFixture
+        );
+        const sender = "Sender";
+        const reciver = "Revicer";
+        const amount = 500;
+        const transferAmount = 501;
+        await defiBank.connect(Account1).createAccount(sender);
+        await defiBank.connect(Account1).deposit(sender, amount);
+
+        // Then
+        await expect(
+          defiBank.connect(Account1).transfer(sender, reciver, transferAmount)
+        ).to.be.revertedWith("Your balance is not enough to transfer");
+      });
+
+      it("Should revert when reciver is not created", async function () {
+        // Given
+        const { defiBank, Account1, Account2 } = await loadFixture(
+          defiBankFixture
+        );
+        const sender = "Sender";
+        const reciver = "Revicer";
+        const amount = 500;
+        const transferAmount = 250;
+        await defiBank.connect(Account1).createAccount(sender);
+        await defiBank.connect(Account1).deposit(sender, amount);
+
+        // Then
+        await expect(
+          defiBank.connect(Account1).transfer(sender, reciver, transferAmount)
+        ).to.be.revertedWith("This reciver account not found");
+      });
+    });
+
+    describe("MultipleTranfer", function () {
+      it("Should transfer to all accounts if amount is in balances", async function () {
+        // Given
+        const { defiBank, Account1, Account2 } = await loadFixture(
+          defiBankFixture
+        );
+        const sender = "Sender";
+        const reciver1 = "Revicer1";
+        const reciver2 = "Revicer2";
+        const amount = 500;
+        const transferAmount = 100;
+        const fee = Math.floor(transferAmount / 100);
+        await defiBank.connect(Account1).createAccount(sender);
+        await defiBank.connect(Account1).createAccount(reciver1);
+        await defiBank.connect(Account2).createAccount(reciver2);
+        await defiBank.connect(Account1).deposit(sender, amount);
+        // When
+        await defiBank
+          .connect(Account1)
+          .multipleTranfer(sender, [reciver1, reciver2], transferAmount);
+        // Then
+        expect(await defiBank.accountBalance(sender)).to.equal(
+          amount - transferAmount*2
+        );
+        expect(await defiBank.accountBalance(reciver1)).to.equal(
+          transferAmount
+        );
+        expect(await defiBank.accountBalance(reciver2)).to.equal(
+          transferAmount - fee
+        );
+        expect(await defiBank.balanceOf(Account1.address)).to.equal(
+          amount - transferAmount
+        );
+        expect(await defiBank.balanceOf(Account2.address)).to.equal(
+          transferAmount - fee
+        );
+      });
+    });
+
+    describe("Events", function () {
+      it("Should emit an event on Transfer", async function () {
+        // Given
+        const { defiBank, Account1 } = await loadFixture(defiBankFixture);
+        const sender = "Sender";
+        const reciver = "Revicer";
+        const amount = 500;
+        const transferAmount = 250;
+        await defiBank.connect(Account1).createAccount(sender);
+        await defiBank.connect(Account1).createAccount(reciver);
+        await defiBank.connect(Account1).deposit(sender, amount);
+        // Then
+        await expect(
+          defiBank.connect(Account1).transfer(sender, reciver, transferAmount)
+        )
+          .to.emit(defiBank, "Transfer")
+          .withArgs(sender, reciver, transferAmount);
       });
     });
   });

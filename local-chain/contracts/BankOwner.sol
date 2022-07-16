@@ -22,7 +22,7 @@ contract BankOwner {
         bankOwner = newOwner;
     }
 
-    function getBankOwner() external view returns (address) {
+    function getBankOwner() public view returns (address) {
         return bankOwner;
     }
 }

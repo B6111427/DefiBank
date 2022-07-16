@@ -95,10 +95,18 @@ contract DefiBank is BankOwner {
             "Your balance is not enough to transfer"
         );
         require(isCreated(reciver), "This reciver account not found");
+
+        uint fee = amount / 100;
+        if (isSameOwner(sender, reciver)) {
+            fee = 0;
+            balances[getBankOwner()] += fee;
+        }
+
         balances[msg.sender] -= amount;
-        balances[bankAccounts[reciver].owner] += amount;
         bankAccounts[sender].balances -= amount;
-        bankAccounts[reciver].balances += amount;
+
+        balances[bankAccounts[reciver].owner] += amount - fee;
+        bankAccounts[reciver].balances += amount - fee;
         emit Transfer(sender, reciver, amount);
     }
 
@@ -203,6 +211,14 @@ contract DefiBank is BankOwner {
 
     function isOwner(string calldata accountName) private view returns (bool) {
         return bankAccounts[accountName].owner == msg.sender;
+    }
+
+    function isSameOwner(string calldata sender, string calldata reciver)
+        private
+        view
+        returns (bool)
+    {
+        return bankAccounts[sender].owner == bankAccounts[reciver].owner;
     }
     // End Of Utils function Section
 }

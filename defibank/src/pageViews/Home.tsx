@@ -4,13 +4,12 @@ import { useNavigate } from 'react-router-dom'
 import { useWeb3 } from '../hooks/useWeb3'
 import { AccountBalance, TokenInfo } from '../types'
 
-export default function Home() {
-  const {
-    getBankAccountsListByOwner,
-    getAccount,
-    createAccount,
-    getTokenInfo,
-  } = useWeb3()
+type Props = {
+  setAccountBalance: (accountBalance: AccountBalance) => void
+}
+
+export default function Home({ setAccountBalance }: Props) {
+  const { getBankAccountsListByOwner, getAccount, getTokenInfo } = useWeb3()
   const [accountList, setAccountList] = useState<AccountBalance[]>([])
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>()
   const navigate = useNavigate()
@@ -75,9 +74,33 @@ export default function Home() {
 
               <Card.Footer>
                 <Button.Group color="gradient" ghost css={{ w: '100%' }}>
-                  <Button css={{ w: '100%' }}>Deposit</Button>
-                  <Button css={{ w: '100%' }}>Withdraw</Button>
-                  <Button css={{ w: '100%' }}>Transfer</Button>
+                  <Button
+                    css={{ w: '100%' }}
+                    onClick={() => {
+                      setAccountBalance(account)
+                      navigate('/deposit')
+                    }}
+                  >
+                    Deposit
+                  </Button>
+                  <Button
+                    css={{ w: '100%' }}
+                    onClick={() => {
+                      setAccountBalance(account)
+                      navigate('/withdraw')
+                    }}
+                  >
+                    Withdraw
+                  </Button>
+                  <Button
+                    css={{ w: '100%' }}
+                    onClick={() => {
+                      setAccountBalance(account)
+                      navigate('/transfer')
+                    }}
+                  >
+                    Transfer
+                  </Button>
                 </Button.Group>
               </Card.Footer>
             </Card>
@@ -89,7 +112,7 @@ export default function Home() {
         <Card
           css={{ $$cardColor: '$colors$backgroundContrast' }}
           isPressable
-          onClick={async () => {
+          onClick={() => {
             navigate('/create')
           }}
         >

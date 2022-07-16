@@ -51,6 +51,10 @@ export function useWeb3() {
     reciver: string[],
     amount: number
   ) {
+    const Reciver = reciver.map((r) => {
+      return `"${r}"`
+    })
+    console.log(Reciver)
     await defibank.methods
       .multipleTransfer(sender, reciver, amount)
       .send({ from: await getAccount() })

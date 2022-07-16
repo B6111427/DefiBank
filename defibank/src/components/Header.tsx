@@ -1,7 +1,7 @@
 import { Button, Card, Grid, Switch, Text, useTheme } from '@nextui-org/react'
 import { useTheme as useNextTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useWeb3 } from '../hooks/useWeb3'
 import { MoonIcon, SunIcon } from '../icons'
 import { formatWalletAddress } from '../utils'
@@ -11,6 +11,7 @@ export default function Header() {
   const { isDark } = useTheme()
   const { eth, getAccount } = useWeb3()
   const [wallet, setWallet] = useState('')
+  const navigate = useNavigate()
 
   const btnhandler = async () => {
     if (eth) {
@@ -50,15 +51,12 @@ export default function Header() {
               marginRight: '50px',
             }}
             weight="bold"
+            onClick={() => {
+              navigate('/')
+            }}
           >
             10XBank
           </Text>
-
-          <nav>
-            {' '}
-            <Link to="/">Home</Link> | <Link to="create">Create Account</Link> |{' '}
-            <Link to="transfer">Tranfer</Link>{' '}
-          </nav>
         </Grid>
         <Grid xs={4} justify="space-between">
           <Switch

@@ -114,7 +114,7 @@ contract DefiBank is BankOwner {
      * description only owner of accountName can transfer token to multi Accounts
      * @dev transfer amount from sender to list of reciver wallet/accountName by same amount
      */
-    function multipleTranfer(
+    function multipleTransfer(
         string calldata sender,
         string[] calldata reciver,
         uint amount

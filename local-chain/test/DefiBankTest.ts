@@ -350,7 +350,7 @@ describe("BankOwner", function () {
         // When
         await defiBank
           .connect(Account1)
-          .multipleTranfer(sender, [reciver1, reciver2], transferAmount);
+          .multipleTransfer(sender, [reciver1, reciver2], transferAmount);
         // Then
         expect(await defiBank.accountBalance(sender)).to.equal(
           amount - transferAmount*2

@@ -11,11 +11,15 @@ Instruction for this project:
 * **For compile smart contract:** 
 ```shell
 $ npx hardhat compile
+//or
+$ yarn compile
 ```
 
 * **For run unit test smart contract:** 
 ```shell
 $ npx hardhat test
+//or
+$ yarn test
 ```
 
 * **Run hardhat node:** 
@@ -28,4 +32,6 @@ $ yarn dev
 * **Deploy contract to local network:** 
 ```shell
 $ npx hardhat run scripts/deploy.ts --network localhost
+//or
+$ yarn deploy-local
 ```

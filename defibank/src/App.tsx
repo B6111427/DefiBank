@@ -1,9 +1,10 @@
 import { Container, Grid } from '@nextui-org/react'
+import { useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
-import Header from './Components/Header'
-import CreateAccount from './PageViews/CreateAccount'
-import Home from './PageViews/Home'
-import Tranfer from './PageViews/Transfer'
+import Header from './components/Header'
+import CreateAccount from './pageViews/CreateAccount'
+import Home from './pageViews/Home'
+import Tranfer from './pageViews/Transfer'
 
 function App() {
   return (

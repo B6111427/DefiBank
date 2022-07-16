@@ -191,7 +191,7 @@ contract DefiBank is BankOwner {
      * @dev check this accountName has owned by any wallet if no owner return true
      */
     function isDuplicate(string calldata accountName)
-        private
+        public
         view
         returns (bool)
     {
@@ -201,20 +201,16 @@ contract DefiBank is BankOwner {
     /**
      * @dev check this accountName has Created if not create return true
      */
-    function isCreated(string calldata accountName)
-        private
-        view
-        returns (bool)
-    {
+    function isCreated(string calldata accountName) public view returns (bool) {
         return bankAccounts[accountName].owner != address(0);
     }
 
-    function isOwner(string calldata accountName) private view returns (bool) {
+    function isOwner(string calldata accountName) public view returns (bool) {
         return bankAccounts[accountName].owner == msg.sender;
     }
 
     function isSameOwner(string calldata sender, string calldata reciver)
-        private
+        public
         view
         returns (bool)
     {

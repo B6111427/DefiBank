@@ -1,17 +1,34 @@
-import {
-  Button,
-  Card, Grid, Switch,
-  Text,
-  useTheme
-} from '@nextui-org/react'
+import { Button, Card, Grid, Switch, Text, useTheme } from '@nextui-org/react'
 import { useTheme as useNextTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MoonIcon, SunIcon } from '../Icons'
+import { useWeb3 } from '../hooks/useWeb3'
+import { MoonIcon, SunIcon } from '../icons'
+import { formatWalletAddress } from '../utils'
 
 export default function Header() {
   const { setTheme } = useNextTheme()
   const { isDark } = useTheme()
+  const { eth, getAccount } = useWeb3()
+  const [wallet, setWallet] = useState('')
 
+  const btnhandler = async () => {
+    if (eth) {
+      const walletAddress = await getAccount()
+      setWallet(walletAddress)
+    } else {
+      alert('install metamask extension!!')
+    }
+  }
+
+  useEffect(() => {
+    ;(async () => {
+      setWallet(await getAccount())
+    })()
+    eth.on('accountsChanged', function () {
+      window.location.reload()
+    })
+  }, [])
   return (
     <Card.Footer
       isBlurred
@@ -47,12 +64,12 @@ export default function Header() {
           <Switch
             checked={isDark}
             size="lg"
-            iconOn={<SunIcon filled />}
-            iconOff={<MoonIcon filled />}
+            iconOn={<MoonIcon filled />}
+            iconOff={<SunIcon filled />}
             onChange={(e) => setTheme(e.target.checked ? 'dark' : 'light')}
           />
-          <Button auto color="gradient" rounded bordered>
-            CONNECT WALLET
+          <Button auto color="gradient" rounded bordered onPress={btnhandler}>
+            {wallet ? formatWalletAddress(wallet) : 'CONNECT WALLET'}
           </Button>
         </Grid>
       </Grid.Container>
